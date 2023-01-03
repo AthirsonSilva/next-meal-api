@@ -6,8 +6,8 @@
 	"private": true,
 	"license": "UNLICENSED",
 	"prisma": {
-		"schema": "prisma/schema.prisma",
-		"generator": "prisma-client-js",
+		"schema": "./prisma/schema.prisma",
+		"generator": "./prisma-client-js",
 		"seed": "ts-node ./prisma/seeders/seed.ts"
 	},
 	"scripts": {

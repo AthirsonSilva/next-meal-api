@@ -1,12 +1,14 @@
 import { PrismaClient } from '@prisma/client'
-import { tbClienteSeed } from './tbcliente'
-import { tbTipoRestauranteSeed } from './tbrestaurante'
+import { tbClienteSeed } from './tbcliente.seeder'
+import { tbTipoPratoSeed } from './tbprato.seeder'
+import { tbTipoRestauranteSeed } from './tbrestaurante.seeder'
 
 const prisma = new PrismaClient()
 
 async function main() {
 	await tbClienteSeed()
 	await tbTipoRestauranteSeed()
+	await tbTipoPratoSeed()
 }
 
 main()
