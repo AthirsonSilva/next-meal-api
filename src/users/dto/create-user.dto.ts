@@ -2,7 +2,7 @@ import { IsEmail, IsPhoneNumber, IsString, Length } from 'class-validator'
 
 export class CreateUserDto {
 	@IsEmail()
-	email: string
+	emailCliente: string
 
 	@IsString()
 	@Length(6, 20)
