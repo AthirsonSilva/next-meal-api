@@ -166,7 +166,7 @@ model tbrestaurante {
 
 model tbstatusreserva {
   idStatusReserva Int         @id @default(autoincrement()) @db.UnsignedInt
-  statusReserva   String      @db.VarChar(255)
+  statusReserva   String      @unique @db.VarChar(255)
   created_at      DateTime?   @db.Timestamp(0)
   updated_at      DateTime?   @db.Timestamp(0)
   tbreserva       tbreserva[]

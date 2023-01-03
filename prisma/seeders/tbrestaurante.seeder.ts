@@ -3,21 +3,49 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export const tbTipoRestauranteSeed = async () => {
+export const tbRestauranteSeed = async () => {
 	for (let i = 0; i < 10; i++) {
 		await prisma.tbtiporestaurante.create({
 			data: {
 				tipoRestaurante: faker.company.name(),
 				created_at: new Date(),
 				updated_at: new Date(),
+				tbrestaurante: {
+					create: {
+						nomeRestaurante: faker.company.name(),
+						cnpjRestaurante: faker.random.numeric(14),
+						telRestaurante: faker.random.numeric(20),
+						emailRestaurante: faker.internet.email(),
+						senhaRestaurante: faker.internet.password(),
+						ruaRestaurante: faker.address.street(),
+						estadoRestaurante: faker.address.state(),
+						cidadeRestaurante: faker.address.city(),
+						cepRestaurante: faker.address.zipCode(),
+						bairroRestaurante: faker.address.county(),
+						capacidadeRestaurante: parseInt(faker.random.numeric(2)),
+						descricaoRestaurante: faker.lorem.paragraph(),
+						fotoRestaurante: faker.image.imageUrl(),
+						horarioAberturaRestaurante: faker.date.recent(),
+						horarioFechamentoRestaurante: faker.date.recent(),
+						lotacaoRestaurante: false,
+						numRestaurante: faker.random.numeric(3),
+						tbmesa: {
+							create: {
+								numMesa: parseInt(faker.random.numeric(1)),
+								quantAcentosMesa: parseInt(faker.random.numeric(2)),
+								statusMesa: parseInt(faker.random.numeric(1)),
+								created_at: new Date(),
+								updated_at: new Date(),
+							},
+						},
+						created_at: new Date(),
+						updated_at: new Date(),
+					},
+				},
 			},
 		})
 	}
 
-	tbRestauranteSeed()
-}
-
-const tbRestauranteSeed = async () => {
 	const ragazzo = await prisma.tbrestaurante.upsert({
 		where: { emailRestaurante: 'ragazzo@prisma.io' },
 		update: {
@@ -57,41 +85,5 @@ const tbRestauranteSeed = async () => {
 		},
 	})
 
-	console.log({ ragazzo })
-
-	for (let i = 0; i < 10; i++) {
-		await prisma.tbrestaurante.create({
-			data: {
-				nomeRestaurante: faker.company.name(),
-				cnpjRestaurante: faker.random.numeric(14),
-				telRestaurante: faker.random.numeric(20),
-				emailRestaurante: faker.internet.email(),
-				senhaRestaurante: faker.internet.password(),
-				ruaRestaurante: faker.address.street(),
-				estadoRestaurante: faker.address.state(),
-				cidadeRestaurante: faker.address.city(),
-				cepRestaurante: faker.address.zipCode(),
-				bairroRestaurante: faker.address.county(),
-				capacidadeRestaurante: parseInt(faker.random.numeric(2)),
-				descricaoRestaurante: faker.lorem.paragraph(),
-				fotoRestaurante: faker.image.imageUrl(),
-				horarioAberturaRestaurante: faker.date.recent(),
-				horarioFechamentoRestaurante: faker.date.recent(),
-				lotacaoRestaurante: false,
-				numRestaurante: faker.random.numeric(3),
-				idTipoRestaurante: parseInt(faker.random.numeric(1)),
-				tbmesa: {
-					create: {
-						numMesa: parseInt(faker.random.numeric(1)),
-						quantAcentosMesa: parseInt(faker.random.numeric(2)),
-						statusMesa: parseInt(faker.random.numeric(1)),
-						created_at: new Date(),
-						updated_at: new Date(),
-					},
-				},
-				created_at: new Date(),
-				updated_at: new Date(),
-			},
-		})
-	}
+	console.log(ragazzo)
 }
