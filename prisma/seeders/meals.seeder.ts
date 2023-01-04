@@ -5,9 +5,9 @@ const prisma = new PrismaClient()
 
 export const mealsSeeder = async () => {
 	for (let i = 0; i < 10; i++) {
-		await prisma.cullinary.create({
+		await prisma.culinary.create({
 			data: {
-				cullinary: faker.random.word(),
+				culinary: faker.random.word(),
 				created_at: new Date(),
 				updated_at: new Date(),
 				photo: faker.image.food(),

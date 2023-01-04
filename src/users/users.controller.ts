@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker'
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common'
 import { clients as ClientModel, Prisma } from '@prisma/client'
 import { CreateUserDto } from './dto/create-user.dto'
@@ -9,7 +10,10 @@ export class UsersController {
 
 	@Post()
 	async create(@Body() createUserDto: CreateUserDto) {
-		const newUser = await this.usersService.createUser(createUserDto)
+		const newUser = await this.usersService.createUser({
+			...createUserDto,
+			photo: createUserDto.photo || faker.image.avatar(),
+		})
 
 		return {
 			message: 'User created successfully',

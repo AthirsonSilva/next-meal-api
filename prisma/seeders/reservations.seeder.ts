@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export const reservationsSeeder = async () => {
-	const types = ['Confirmada', 'Finalizada', 'Cancelada', 'Em espera']
+	const types = ['Confirmed', 'Finished', 'Canceled', 'Awaiting']
 
 	types.forEach(async (type) => {
 		await prisma.statuses.upsert({

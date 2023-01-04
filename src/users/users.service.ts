@@ -1,6 +1,9 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { clients as Client, Prisma } from '@prisma/client'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaService } from 'prisma/prisma.service'
+import { CpfParser } from './helpers/cpf-parser'
+import { PhoneParser } from './helpers/phone-parser'
+import { UserAlreadyExists } from './helpers/user-already-exists'
 
 @Injectable()
 export class UsersService {
@@ -32,9 +35,36 @@ export class UsersService {
 	}
 
 	async createUser(data: Prisma.clientsCreateInput): Promise<Client> {
-		return this.prisma.clients.create({
-			data,
-		})
+		try {
+			let { cpf, phone } = data
+			cpf = new CpfParser(cpf).parse()
+			phone = new PhoneParser(phone).parse()
+			const userExists = await new UserAlreadyExists(this.prisma).check(
+				data.email,
+				cpf,
+				phone,
+			)
+
+			if (cpf.length !== 11) throw new BadRequestException('Invalid CPF')
+			if (phone.length > 20 || phone.length < 8)
+				throw new BadRequestException('Invalid Phone number')
+
+			if (userExists !== false) {
+				throw new BadRequestException(
+					`A user with this ${userExists} already exists`,
+				)
+			}
+
+			Object.assign(data, { cpf, phone })
+
+			return this.prisma.clients.create({
+				data,
+			})
+		} catch (error) {
+			console.log(error)
+
+			throw new BadRequestException(error)
+		}
 	}
 
 	async updateUser(params: {

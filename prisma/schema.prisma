@@ -49,15 +49,15 @@ model meals {
   name        String      @db.VarChar(60)
   price       Decimal     @db.Decimal(6, 2)
   ingredients String      @db.VarChar(100)
-  cullinary   Int         @db.UnsignedInt
+  culinary    Int         @db.UnsignedInt
   restaurant  Int         @db.UnsignedInt
   created_at  DateTime?   @db.Timestamp(0)
   updated_at  DateTime?   @db.Timestamp(0)
   photo       String      @db.VarChar(255)
   restaurants restaurants @relation(fields: [restaurant], references: [id], onUpdate: Restrict, map: "meals_restaurant_foreign")
-  cullinaries cullinary   @relation(fields: [cullinary], references: [id], onUpdate: Restrict, map: "meals_cullinary_foreign")
+  cullinaries culinary    @relation(fields: [culinary], references: [id], onUpdate: Restrict, map: "meals_culinary_foreign")
 
-  @@index([cullinary], map: "meals_cullinary_foreign")
+  @@index([culinary], map: "meals_culinary_foreign")
   @@index([restaurant], map: "meals_restaurant_foreign")
 }
 
@@ -128,9 +128,9 @@ model statuses {
   reservations reservations[]
 }
 
-model cullinary {
+model culinary {
   id         Int       @id @default(autoincrement()) @db.UnsignedInt
-  cullinary  String    @unique @db.VarChar(20)
+  culinary   String    @unique @db.VarChar(20)
   photo      String    @db.VarChar(255)
   created_at DateTime? @db.Timestamp(0)
   updated_at DateTime? @db.Timestamp(0)
