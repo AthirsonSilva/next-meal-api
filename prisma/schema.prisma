@@ -1,0 +1,200 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model failed_jobs {
+  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  uuid       String   @unique(map: "failed_jobs_uuid_unique") @db.VarChar(255)
+  connection String   @db.Text
+  queue      String   @db.Text
+  payload    String   @db.LongText
+  exception  String   @db.LongText
+  failed_at  DateTime @default(now()) @db.Timestamp(0)
+}
+
+model migrations {
+  id        Int    @id @default(autoincrement()) @db.UnsignedInt
+  migration String @db.VarChar(255)
+  batch     Int
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model password_resets {
+  email      String    @db.VarChar(255)
+  token      String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+
+  @@index([email], map: "password_resets_email_index")
+  @@ignore
+}
+
+model personal_access_tokens {
+  id             BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  tokenable_type String    @db.VarChar(255)
+  tokenable_id   BigInt    @db.UnsignedBigInt
+  name           String    @db.VarChar(255)
+  token          String    @unique(map: "personal_access_tokens_token_unique") @db.VarChar(64)
+  abilities      String?   @db.Text
+  last_used_at   DateTime? @db.Timestamp(0)
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+
+  @@index([tokenable_type, tokenable_id], map: "personal_access_tokens_tokenable_type_tokenable_id_index")
+}
+
+model tbavaliacao {
+  idAvaliacao   Int       @id @default(autoincrement()) @db.UnsignedInt
+  dtAvaliacao   DateTime  @db.Date
+  notaAvaliacao Int
+  descAvaliacao String    @db.VarChar(255)
+  idRestaurante Int
+  idCliente     Int
+  created_at    DateTime? @db.Timestamp(0)
+  updated_at    DateTime? @db.Timestamp(0)
+}
+
+model tbcliente {
+  idCliente       Int         @id @default(autoincrement()) @db.UnsignedInt
+  nomeCliente     String      @db.VarChar(60)
+  cpfCliente      String      @unique(map: "tbcliente_cpfcliente_unique") @db.Char(11)
+  senhaCliente    String      @db.VarChar(60)
+  emailCliente    String      @unique(map: "tbcliente_emailcliente_unique") @db.VarChar(100)
+  telefoneCliente String      @unique(map: "tbcliente_telefonecliente_unique") @db.VarChar(30)
+  created_at      DateTime?   @default(now()) @db.Timestamp(0)
+  updated_at      DateTime?   @default(now()) @db.Timestamp(0)
+  tbreserva       tbreserva[]
+}
+
+model tbmesa {
+  idMesa           Int             @id @default(autoincrement()) @db.UnsignedInt
+  quantAcentosMesa Int
+  statusMesa       Int
+  numMesa          Int
+  idRestaurante    Int             @db.UnsignedInt
+  created_at       DateTime?       @db.Timestamp(0)
+  updated_at       DateTime?       @db.Timestamp(0)
+  tbrestaurante    tbrestaurante   @relation(fields: [idRestaurante], references: [idRestaurante], onUpdate: Restrict, map: "tbmesa_idrestaurante_foreign")
+  tbmesareserva    tbmesareserva[]
+
+  @@index([idRestaurante], map: "tbmesa_idrestaurante_foreign")
+}
+
+model tbmesareserva {
+  idMesaReserva Int       @id @default(autoincrement()) @db.UnsignedInt
+  idMesa        Int       @db.UnsignedInt
+  idReserva     Int       @db.UnsignedInt
+  created_at    DateTime? @db.Timestamp(0)
+  updated_at    DateTime? @db.Timestamp(0)
+  tbmesa        tbmesa    @relation(fields: [idMesa], references: [idMesa], onUpdate: Restrict, map: "tbmesareserva_idmesa_foreign")
+  tbreserva     tbreserva @relation(fields: [idReserva], references: [idReserva], onUpdate: Restrict, map: "tbmesareserva_idreserva_foreign")
+
+  @@index([idMesa], map: "tbmesareserva_idmesa_foreign")
+  @@index([idReserva], map: "tbmesareserva_idreserva_foreign")
+}
+
+model tbprato {
+  idPrato           Int           @id @default(autoincrement()) @db.UnsignedInt
+  nomePrato         String        @db.VarChar(60)
+  valorPrato        Decimal       @db.Decimal(6, 2)
+  ingredientesPrato String        @db.VarChar(100)
+  fotoPrato         String        @db.VarChar(255)
+  idTipoPrato       Int           @db.UnsignedInt
+  idRestaurante     Int           @db.UnsignedInt
+  created_at        DateTime?     @db.Timestamp(0)
+  updated_at        DateTime?     @db.Timestamp(0)
+  tbrestaurante     tbrestaurante @relation(fields: [idRestaurante], references: [idRestaurante], onUpdate: Restrict, map: "tbprato_idrestaurante_foreign")
+  tbtipoprato       tbtipoprato   @relation(fields: [idTipoPrato], references: [idTipoPrato], onUpdate: Restrict, map: "tbprato_idtipoprato_foreign")
+
+  @@index([idRestaurante], map: "tbprato_idrestaurante_foreign")
+  @@index([idTipoPrato], map: "tbprato_idtipoprato_foreign")
+}
+
+model tbreserva {
+  idReserva       Int             @id @default(autoincrement()) @db.UnsignedInt
+  dataReserva     DateTime        @db.Date
+  horaReserva     DateTime        @db.Time(0)
+  numPessoas      Int
+  idCliente       Int             @db.UnsignedInt
+  idRestaurante   Int             @db.UnsignedInt
+  idStatusReserva Int             @db.UnsignedInt
+  created_at      DateTime?       @db.Timestamp(0)
+  updated_at      DateTime?       @db.Timestamp(0)
+  tbmesareserva   tbmesareserva[]
+  tbcliente       tbcliente       @relation(fields: [idCliente], references: [idCliente], onUpdate: Restrict, map: "tbreserva_idcliente_foreign")
+  tbrestaurante   tbrestaurante   @relation(fields: [idRestaurante], references: [idRestaurante], onUpdate: Restrict, map: "tbreserva_idrestaurante_foreign")
+  tbstatusreserva tbstatusreserva @relation(fields: [idStatusReserva], references: [idStatusReserva], onUpdate: Restrict, map: "tbreserva_idstatusreserva_foreign")
+
+  @@index([idCliente], map: "tbreserva_idcliente_foreign")
+  @@index([idRestaurante], map: "tbreserva_idrestaurante_foreign")
+  @@index([idStatusReserva], map: "tbreserva_idstatusreserva_foreign")
+}
+
+model tbrestaurante {
+  idRestaurante                Int               @id @default(autoincrement()) @db.UnsignedInt
+  nomeRestaurante              String            @db.VarChar(300)
+  cnpjRestaurante              String            @db.Char(14)
+  telRestaurante               String            @db.VarChar(30)
+  senhaRestaurante             String            @db.VarChar(255)
+  fotoRestaurante              String            @db.VarChar(255)
+  emailRestaurante             String            @unique @db.VarChar(100)
+  cepRestaurante               String            @db.VarChar(40)
+  ruaRestaurante               String            @db.VarChar(100)
+  numRestaurante               String            @db.VarChar(5)
+  bairroRestaurante            String            @db.VarChar(100)
+  cidadeRestaurante            String            @db.VarChar(100)
+  estadoRestaurante            String            @db.VarChar(40)
+  horarioAberturaRestaurante   DateTime          @db.Time(0)
+  horarioFechamentoRestaurante DateTime          @db.Time(0)
+  capacidadeRestaurante        Int
+  lotacaoRestaurante           Boolean
+  descricaoRestaurante         String            @db.VarChar(1000)
+  idTipoRestaurante            Int               @db.UnsignedInt
+  created_at                   DateTime?         @db.Timestamp(0)
+  updated_at                   DateTime?         @db.Timestamp(0)
+  tbmesa                       tbmesa[]
+  tbprato                      tbprato[]
+  tbreserva                    tbreserva[]
+  tbtiporestaurante            tbtiporestaurante @relation(fields: [idTipoRestaurante], references: [idTipoRestaurante], onUpdate: Restrict, map: "tbrestaurante_idtiporestaurante_foreign")
+
+  @@index([idTipoRestaurante], map: "tbrestaurante_idtiporestaurante_foreign")
+}
+
+model tbstatusreserva {
+  idStatusReserva Int         @id @default(autoincrement()) @db.UnsignedInt
+  statusReserva   String      @unique @db.VarChar(255)
+  created_at      DateTime?   @db.Timestamp(0)
+  updated_at      DateTime?   @db.Timestamp(0)
+  tbreserva       tbreserva[]
+}
+
+model tbtipoprato {
+  idTipoPrato Int       @id @default(autoincrement()) @db.UnsignedInt
+  tipoPrato   String    @db.VarChar(20)
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+  tbprato     tbprato[]
+}
+
+model tbtiporestaurante {
+  idTipoRestaurante Int             @id @default(autoincrement()) @db.UnsignedInt
+  tipoRestaurante   String          @db.VarChar(40)
+  created_at        DateTime?       @db.Timestamp(0)
+  updated_at        DateTime?       @db.Timestamp(0)
+  tbrestaurante     tbrestaurante[]
+}
+
+model users {
+  id                BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  name              String    @db.VarChar(255)
+  email             String    @unique(map: "users_email_unique") @db.VarChar(255)
+  email_verified_at DateTime? @db.Timestamp(0)
+  password          String    @db.VarChar(255)
+  remember_token    String?   @db.VarChar(100)
+  created_at        DateTime? @db.Timestamp(0)
+  updated_at        DateTime? @db.Timestamp(0)
+}
