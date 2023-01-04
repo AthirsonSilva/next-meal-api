@@ -1,18 +1,18 @@
 import { PrismaClient } from '@prisma/client'
-import { tbAvaliacaoSeed } from './tbavaliacao.seeder'
-import { tbClienteSeed } from './tbcliente.seeder'
-import { tbPratoSeed } from './tbprato.seeder'
-import { tbReservaSeed } from './tbreserva.seeder'
-import { tbRestauranteSeed } from './tbrestaurante.seeder'
+import { clientsSeeder } from './clients.seeder'
+import { mealsSeeder } from './meals.seeder'
+import { ratingsSeeder } from './ratings.seeder'
+import { reservationsSeeder } from './reservations.seeder'
+import { restaurantsSeeder } from './restaurants.seeder'
 
 const prisma = new PrismaClient()
 
 async function main() {
-	await tbClienteSeed()
-	await tbRestauranteSeed()
-	await tbPratoSeed()
-	await tbAvaliacaoSeed()
-	await tbReservaSeed()
+	await clientsSeeder()
+	await restaurantsSeeder()
+	await mealsSeeder()
+	await ratingsSeeder()
+	await reservationsSeeder()
 }
 
 main()
