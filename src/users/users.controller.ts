@@ -1,7 +1,17 @@
 import { faker } from '@faker-js/faker'
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common'
+import {
+	BadRequestException,
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+} from '@nestjs/common'
 import { clients as ClientModel, Prisma } from '@prisma/client'
 import { CreateUserDto } from './dto/create-user.dto'
+import { UpdateUserDto } from './dto/update-user.dto'
 import { UsersService } from './users.service'
 
 @Controller('users')
@@ -26,14 +36,19 @@ export class UsersController {
 		return this.usersService.findUsers({})
 	}
 
-	@Get('post/:id')
-	async getPostById(@Param('id') id: string): Promise<ClientModel> {
+	@Get(':id')
+	async findUser(
+		@Param('id') id: Prisma.clientsWhereUniqueInput,
+	): Promise<ClientModel> {
+		if (!id) throw new BadRequestException('You must provide an id')
+
 		return this.usersService.findUser({ id: Number(id) })
 	}
 
-	async publishPost(
-		@Param('id') id: string,
-		data: Prisma.clientsUpdateInput,
+	@Patch(':id')
+	async updateUser(
+		@Param('id') id: Prisma.clientsWhereUniqueInput,
+		data: UpdateUserDto,
 	): Promise<ClientModel> {
 		return this.usersService.updateUser({
 			where: { id: Number(id) },
@@ -42,7 +57,7 @@ export class UsersController {
 	}
 
 	@Delete(':id')
-	remove(@Param('id') id: string) {
+	remove(@Param('id') id: Prisma.clientsWhereUniqueInput) {
 		return this.usersService.deleteUser({ id: Number(id) })
 	}
 }

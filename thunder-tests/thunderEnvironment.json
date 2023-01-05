@@ -14,5 +14,16 @@
       }
     ],
     "envFile": "..\\.env"
+  },
+  {
+    "_id": "cf39125c-f698-4c20-9322-a92ab00eb15d",
+    "name": "(Local Env)",
+    "default": false,
+    "global": true,
+    "local": true,
+    "sortNum": -1,
+    "created": "2023-01-05T21:37:59.188Z",
+    "modified": "2023-01-05T21:37:59.188Z",
+    "data": []
   }
 ]

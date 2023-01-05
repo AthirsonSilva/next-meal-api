@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { clients as Client, Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma.service'
+import { UpdateUserDto } from './dto/update-user.dto'
 import { CpfParser } from './helpers/cpf-parser'
 import { PhoneParser } from './helpers/phone-parser'
 import { UserAlreadyExists } from './helpers/user-already-exists'
@@ -67,12 +68,30 @@ export class UsersService {
 
 	async updateUser(params: {
 		where: Prisma.clientsWhereUniqueInput
-		data: Prisma.clientsUpdateInput
+		data: UpdateUserDto
 	}): Promise<Client> {
 		const { where, data } = params
+		const result = await this.prisma.clients
+			.findFirst({
+				where,
+			})
+			.then((user) => {
+				if (!user) throw new BadRequestException('User not found')
+
+				Object.assign(user, {
+					...data,
+					cpf: new CpfParser(data.cpf).parse(),
+					phone: new PhoneParser(data.phone).parse(),
+				})
+
+				console.log(user)
+
+				return user
+			})
+
 		return this.prisma.clients.update({
-			data,
 			where,
+			data: result,
 		})
 	}
 

@@ -4,18 +4,79 @@
     "colId": "ca145009-042b-426e-b352-f46c36ebfc24",
     "containerId": "bab63451-4556-4440-a0a1-c8f69e5ba22e",
     "name": "Create client",
-    "url": "localhost:3000/users",
+    "url": "{{users}}",
     "method": "POST",
     "sortNum": 10000,
     "created": "2023-01-05T09:40:46.954Z",
-    "modified": "2023-01-05T09:42:01.763Z",
+    "modified": "2023-01-05T21:46:08.876Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\r\n    \"cpf\": \"522.910.708-18\",\r\n    \"email\": \"athirsonarceus2@gmail.com\",\r\n    \"name\": \"Athirson Silva\",\r\n    \"password\": \"123456\",\r\n    \"phone\": \"(11) 9 5760-7172\"\r\n}",
+      "raw": "{\n    \"cpf\": \"522.910.708-18\",\n    \"email\": \"athirsonarceus2@gmail.com\",\n    \"name\": \"Athirson Silva\",\n    \"password\": \"123456\",\n    \"phone\": \"(11) 9 5760-7172\"\n}",
       "form": []
     },
+    "tests": []
+  },
+  {
+    "_id": "86eb6f23-809a-4f55-b444-b7ee030b97f7",
+    "colId": "ca145009-042b-426e-b352-f46c36ebfc24",
+    "containerId": "bab63451-4556-4440-a0a1-c8f69e5ba22e",
+    "name": "Find all clients",
+    "url": "{{users}}",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2023-01-05T21:37:43.760Z",
+    "modified": "2023-01-05T22:02:41.467Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "1a86cdd3-f41f-424b-a4bc-edc842b9ec65",
+    "colId": "ca145009-042b-426e-b352-f46c36ebfc24",
+    "containerId": "bab63451-4556-4440-a0a1-c8f69e5ba22e",
+    "name": "Update client",
+    "url": "{{users}}/1",
+    "method": "PATCH",
+    "sortNum": 30000,
+    "created": "2023-01-05T21:50:21.714Z",
+    "modified": "2023-01-05T21:51:11.249Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"name\": \"Azilzor UPDATED\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "d4614282-c93c-4457-904c-9ef15dd1266c",
+    "colId": "ca145009-042b-426e-b352-f46c36ebfc24",
+    "containerId": "bab63451-4556-4440-a0a1-c8f69e5ba22e",
+    "name": "Delete client",
+    "url": "{{users}}/1",
+    "method": "DELETE",
+    "sortNum": 40000,
+    "created": "2023-01-05T22:02:25.091Z",
+    "modified": "2023-01-05T22:02:58.608Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "e14b9ab2-4d4f-4f37-a2f6-b8b3117ee943",
+    "colId": "ca145009-042b-426e-b352-f46c36ebfc24",
+    "containerId": "bab63451-4556-4440-a0a1-c8f69e5ba22e",
+    "name": "Find one client",
+    "url": "{{users}}/1",
+    "method": "GET",
+    "sortNum": 50000,
+    "created": "2023-01-05T22:03:04.975Z",
+    "modified": "2023-01-05T22:03:14.714Z",
+    "headers": [],
+    "params": [],
     "tests": []
   }
 ]
