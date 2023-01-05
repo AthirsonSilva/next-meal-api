@@ -27,4 +27,6 @@ describe('UsersService', () => {
 				.then((userFound) => expect(userFound).toBeDefined())
 		})
 	})
+
+	// TODO: Write client CRUD tests for the service
 })

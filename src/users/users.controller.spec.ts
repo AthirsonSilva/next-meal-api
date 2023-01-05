@@ -18,4 +18,6 @@ describe('UsersController', () => {
 	it('should be defined', () => {
 		expect(controller).toBeDefined()
 	})
+
+	// TODO: Write client CRUD tests for the controller
 })
