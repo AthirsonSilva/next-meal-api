@@ -48,12 +48,9 @@ export class UsersController {
 	@Patch(':id')
 	async updateUser(
 		@Param('id') id: Prisma.clientsWhereUniqueInput,
-		data: UpdateUserDto,
+		@Body() data: UpdateUserDto,
 	): Promise<ClientModel> {
-		return this.usersService.updateUser({
-			where: { id: Number(id) },
-			data: data,
-		})
+		return this.usersService.updateUser({ id: Number(id) }, data)
 	}
 
 	@Delete(':id')

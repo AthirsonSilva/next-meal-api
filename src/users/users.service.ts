@@ -66,11 +66,10 @@ export class UsersService {
 		}
 	}
 
-	async updateUser(params: {
-		where: Prisma.clientsWhereUniqueInput
-		data: UpdateUserDto
-	}): Promise<Client> {
-		const { where, data } = params
+	async updateUser(
+		where: Prisma.clientsWhereUniqueInput,
+		data: UpdateUserDto,
+	): Promise<Client> {
 		const result = await this.prisma.clients
 			.findFirst({
 				where,
@@ -80,11 +79,7 @@ export class UsersService {
 
 				Object.assign(user, {
 					...data,
-					cpf: new CpfParser(data.cpf).parse(),
-					phone: new PhoneParser(data.phone).parse(),
 				})
-
-				console.log(user)
 
 				return user
 			})
