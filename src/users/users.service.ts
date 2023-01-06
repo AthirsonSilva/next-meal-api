@@ -79,6 +79,8 @@ export class UsersService {
 
 				Object.assign(user, {
 					...data,
+					cpf: new CpfParser(data.cpf ?? user.cpf).parse(),
+					phone: new PhoneParser(data.phone ?? user.phone).parse(),
 				})
 
 				return user

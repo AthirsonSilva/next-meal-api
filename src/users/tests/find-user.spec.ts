@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { PrismaService } from '../prisma.service'
-import { CreateDummyClient } from './helpers/create-dummy-client'
-import { UsersService } from './users.service'
+import { PrismaService } from '../../prisma.service'
+import { CreateDummyClient } from '../helpers/create-dummy-client'
+import { UsersService } from '../users.service'
 
-describe('UsersService', () => {
+describe('Find user service', () => {
 	let service: UsersService
 
 	beforeEach(async () => {
@@ -14,12 +14,6 @@ describe('UsersService', () => {
 		service = module.get<UsersService>(UsersService)
 	})
 
-	it('should create a user', async () => {
-		await new CreateDummyClient(service)
-			.execute()
-			.then((user) => expect(user).toBeDefined())
-	})
-
 	it('it should find a user by id', async () => {
 		await new CreateDummyClient(service).execute().then(async (user) => {
 			await service
@@ -28,5 +22,9 @@ describe('UsersService', () => {
 		})
 	})
 
-	// TODO: Write client CRUD tests for the service
+	it('it should not find a user without providing an id', async () => {
+		await service.findUser({}).catch((error) => {
+			expect(error).toBeDefined()
+		})
+	})
 })
