@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { clients as Client } from '@prisma/client'
-import { UsersService } from '../users.service'
+import { UsersService } from '../src/users/users.service'
 
 export class CreateDummyClient {
 	constructor(private readonly usersRepository: UsersService) {}

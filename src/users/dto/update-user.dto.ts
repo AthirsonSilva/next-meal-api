@@ -11,23 +11,23 @@ import { CreateUserDto } from './create-user.dto'
 export class UpdateUserDto extends PartialType(CreateUserDto) {
 	@IsEmail()
 	@IsOptional()
-	email: string
+	email?: string
 
 	@IsString()
 	@Length(6, 20)
 	@IsOptional()
-	password: string
+	password?: string
 
 	@IsString()
 	@IsOptional()
-	name: string
+	name?: string
 
 	@IsString()
 	@Length(14, 14)
 	@IsOptional()
-	cpf: string
+	cpf?: string
 
 	@IsPhoneNumber('BR')
 	@IsOptional()
-	phone: string
+	phone?: string
 }

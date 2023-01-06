@@ -3,7 +3,7 @@ import { CreateDummyClient } from '../../../helpers/create-dummy-client'
 import { PrismaService } from '../../prisma.service'
 import { UsersService } from '../users.service'
 
-describe('Find user service', () => {
+describe('Delete user service', () => {
 	let service: UsersService
 
 	beforeEach(async () => {
@@ -14,16 +14,16 @@ describe('Find user service', () => {
 		service = module.get<UsersService>(UsersService)
 	})
 
-	it('it should find a user by id', async () => {
+	it('should delete a user', async () => {
 		await new CreateDummyClient(service).execute().then(async (user) => {
-			await service
-				.findUser({ id: user.id })
-				.then((userFound) => expect(userFound).toBeDefined())
+			await service.deleteUser({ id: user.id }).then((userDeleted) => {
+				expect(userDeleted).toBeDefined()
+			})
 		})
 	})
 
-	it('it should not find a user without providing an id', async () => {
-		await service.findUser({}).catch((error) => {
+	it('should not delete a user without providing an unique value', async () => {
+		await service.deleteUser({}).catch((error) => {
 			expect(error).toBeDefined()
 		})
 	})

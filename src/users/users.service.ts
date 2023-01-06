@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { clients as Client, Prisma } from '@prisma/client'
+import { CpfParser } from '../../helpers/cpf-parser'
+import { PhoneParser } from '../../helpers/phone-parser'
+import { UserAlreadyExists } from '../../helpers/user-already-exists'
 import { PrismaService } from '../prisma.service'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { CpfParser } from './helpers/cpf-parser'
-import { PhoneParser } from './helpers/phone-parser'
-import { UserAlreadyExists } from './helpers/user-already-exists'
 
 @Injectable()
 export class UsersService {
