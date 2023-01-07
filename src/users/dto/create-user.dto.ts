@@ -1,20 +1,30 @@
-import { IsEmail, IsPhoneNumber, IsString, Length } from 'class-validator'
+import {
+	IsEmail,
+	IsOptional,
+	IsPhoneNumber,
+	IsString,
+	Length,
+} from 'class-validator'
 
 export class CreateUserDto {
 	@IsEmail()
-	emailCliente: string
+	email: string
 
 	@IsString()
 	@Length(6, 20)
-	senhaCliente: string
+	password: string
 
 	@IsString()
-	nomeCliente: string
+	name: string
 
 	@IsString()
 	@Length(14, 14)
-	cpfCliente: string
+	cpf: string
 
 	@IsPhoneNumber('BR')
-	telefoneCliente: string
+	phone: string
+
+	@IsString()
+	@IsOptional()
+	photo?: string
 }

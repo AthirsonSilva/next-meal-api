@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "ca145009-042b-426e-b352-f46c36ebfc24",
+    "colName": "Nest Meal",
+    "created": "2023-01-05T09:40:30.122Z",
+    "sortNum": 10000,
+    "folders": [
+      {
+        "_id": "bab63451-4556-4440-a0a1-c8f69e5ba22e",
+        "name": "Clients",
+        "containerId": "",
+        "created": "2023-01-05T09:40:40.584Z",
+        "sortNum": 10000
+      }
+    ]
+  }
+]

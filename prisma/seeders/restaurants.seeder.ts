@@ -5,12 +5,12 @@ const prisma = new PrismaClient()
 
 export const restaurantsSeeder = async () => {
 	const ragazzo = await prisma.kitchens.upsert({
-		where: { kitchen: 'Italiana' },
+		where: { kitchen: 'Italian' },
 		update: {
 			updated_at: new Date(),
 		},
 		create: {
-			kitchen: 'Italiana',
+			kitchen: 'Italian',
 			photo: faker.image.food(),
 			created_at: new Date(),
 			updated_at: new Date(),
@@ -33,7 +33,7 @@ export const restaurantsSeeder = async () => {
 						},
 					},
 					capacity: 20,
-					description: 'Restaurante de comida italiana',
+					description: 'Italian food restaurant',
 					opening_time: new Date('2021-01-01 12:00:00'),
 					closing_time: new Date('2021-01-01 23:00:00'),
 					is_full: false,
