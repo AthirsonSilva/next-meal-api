@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker'
 import { Test, TestingModule } from '@nestjs/testing'
-import { CreateDummyClient } from '../../../helpers/create-dummy-client'
-import { PrismaService } from '../../prisma.service'
-import { UsersService } from '../users.service'
+import { CreateDummyClient } from '../../../../helpers/create-dummy-client'
+import { PrismaService } from '../../../prisma.service'
+import { UsersService } from '../../users.service'
 
 describe('Create user service', () => {
 	let service: UsersService

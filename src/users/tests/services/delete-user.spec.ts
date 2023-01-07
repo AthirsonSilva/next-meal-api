@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { CreateDummyClient } from '../../../helpers/create-dummy-client'
-import { PrismaService } from '../../prisma.service'
-import { UsersService } from '../users.service'
+import { CreateDummyClient } from '../../../../helpers/create-dummy-client'
+import { PrismaService } from '../../../prisma.service'
+import { UsersService } from '../../users.service'
 
 describe('Delete user service', () => {
 	let service: UsersService
