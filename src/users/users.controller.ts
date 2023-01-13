@@ -15,7 +15,9 @@ import {
 	forwardRef,
 } from '@nestjs/common'
 import { clients as ClientModel, Prisma } from '@prisma/client'
+import { LocalStrategy } from '@src/auth/local.strategy'
 import { AuthService } from './../auth/auth.service'
+import { ValidateUserDto } from './../auth/dtos/validate-user.dto'
 import { JwtAuthGuard } from './../auth/jwt-auth.guard'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -51,8 +53,8 @@ export class UsersController {
 	@Get('protected')
 	@UseGuards(JwtAuthGuard)
 	async protected(
-		@Request() request: any,
-	): Promise<{ user: User; message: string }> {
+		@Request() request: { user: ValidateUserDto },
+	): Promise<{ user: ValidateUserDto; message: string }> {
 		return {
 			message: 'You are authenticated',
 			user: request.user,
@@ -60,6 +62,7 @@ export class UsersController {
 	}
 
 	@Post('login')
+	@UseGuards(LocalStrategy)
 	async login(
 		@Body() request: UserLoginDto,
 	): Promise<{ user: string; message: string }> {
@@ -72,7 +75,6 @@ export class UsersController {
 	}
 
 	@Get()
-	@UseGuards(JwtAuthGuard)
 	async findAll(): Promise<{ users: ClientModel[]; message: string }> {
 		const users = await this.usersService.findUsers({})
 
@@ -102,16 +104,19 @@ export class UsersController {
 		}
 	}
 
-	@Patch(':id')
+	@Patch()
+	@UseGuards(JwtAuthGuard)
 	async updateUser(
-		@Param('id') id: Prisma.clientsWhereUniqueInput,
 		@Body() data: UpdateUserDto,
+		@Request() request: { user: User },
 	): Promise<{ user: ClientModel; message: string }> {
+		let { id } = request.user
+
 		if (!id) throw new BadRequestException('You must provide an id')
 
-		id = { id: Number(id) }
+		id = Number(id)
 
-		const update = await this.usersService.updateUser(id, data)
+		const update = await this.usersService.updateUser({ id }, data)
 
 		if (!update) throw new NotFoundException('User not found')
 
@@ -121,15 +126,18 @@ export class UsersController {
 		}
 	}
 
-	@Delete(':id')
+	@Delete()
+	@UseGuards(JwtAuthGuard)
 	async remove(
-		@Param('id') id: Prisma.clientsWhereUniqueInput,
+		@Request() request: { user: User },
 	): Promise<{ user: ClientModel; message: string }> {
+		let { id } = request.user
+
 		if (!id) throw new BadRequestException('You must provide an id')
 
-		id = { id: Number(id) }
+		id = parseInt(String(id))
 
-		const user = await this.usersService.deleteUser(id)
+		const user = await this.usersService.deleteUser({ id })
 
 		return {
 			message: 'User deleted successfully',
