@@ -10,15 +10,17 @@ import {
 	Param,
 	Patch,
 	Post,
+	Request,
 	UseGuards,
 	forwardRef,
 } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
 import { clients as ClientModel, Prisma } from '@prisma/client'
 import { AuthService } from './../auth/auth.service'
+import { JwtAuthGuard } from './../auth/jwt-auth.guard'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UserLoginDto } from './dto/user-login.dto'
+import { User } from './entities/user.entity'
 import { UsersService } from './users.service'
 
 @Controller('users')
@@ -46,6 +48,17 @@ export class UsersController {
 		}
 	}
 
+	@Get('protected')
+	@UseGuards(JwtAuthGuard)
+	async protected(
+		@Request() request: any,
+	): Promise<{ user: User; message: string }> {
+		return {
+			message: 'You are authenticated',
+			user: request.user,
+		}
+	}
+
 	@Post('login')
 	async login(
 		@Body() request: UserLoginDto,
@@ -59,7 +72,7 @@ export class UsersController {
 	}
 
 	@Get()
-	@UseGuards(AuthGuard('jwt'))
+	@UseGuards(JwtAuthGuard)
 	async findAll(): Promise<{ users: ClientModel[]; message: string }> {
 		const users = await this.usersService.findUsers({})
 

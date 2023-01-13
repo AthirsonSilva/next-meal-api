@@ -13,7 +13,7 @@ export class UsersService {
 	async findUser(
 		where: Prisma.clientsWhereUniqueInput,
 	): Promise<Client | null> {
-		if (where.id) where.id = Number(where.id)
+		if (where.id) where.id = parseInt(String(where.id))
 
 		return this.prisma.clients.findUnique({
 			where: where,
