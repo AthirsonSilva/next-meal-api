@@ -1,5 +1,7 @@
+import { forwardRef } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { CreateDummyClient } from '../../../../helpers/create-dummy-client'
+import { AuthModule } from '../../../auth/auth.module'
 import { PrismaService } from '../../../prisma.service'
 import { UsersController } from '../../users.controller'
 import { UsersService } from '../../users.service'
@@ -10,6 +12,7 @@ describe('Find user controller', () => {
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
+			imports: [forwardRef(() => AuthModule)],
 			controllers: [UsersController],
 			providers: [UsersService, PrismaService],
 		}).compile()
@@ -20,8 +23,6 @@ describe('Find user controller', () => {
 
 	it('should find a user by id', async () => {
 		await new CreateDummyClient(service).execute().then(async (user) => {
-			console.log(user.id)
-
 			await controller
 				.findUser({ id: parseFloat(String(user.id)) })
 				.then((response) => {

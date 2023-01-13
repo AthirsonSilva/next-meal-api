@@ -11,10 +11,12 @@ export class UsersService {
 	constructor(private prisma: PrismaService) {}
 
 	async findUser(
-		userWhereUniqueInput: Prisma.clientsWhereUniqueInput,
+		where: Prisma.clientsWhereUniqueInput,
 	): Promise<Client | null> {
+		if (where.id) where.id = Number(where.id)
+
 		return this.prisma.clients.findUnique({
-			where: userWhereUniqueInput,
+			where: where,
 		})
 	}
 
@@ -70,6 +72,8 @@ export class UsersService {
 		where: Prisma.clientsWhereUniqueInput,
 		data: UpdateUserDto,
 	): Promise<Client> {
+		if (where.id) where.id = Number(where.id)
+
 		const result = await this.prisma.clients
 			.findFirst({
 				where,
@@ -93,6 +97,8 @@ export class UsersService {
 	}
 
 	async deleteUser(where: Prisma.clientsWhereUniqueInput): Promise<Client> {
+		if (where.id) where.id = Number(where.id)
+
 		return this.prisma.clients.delete({
 			where,
 		})
