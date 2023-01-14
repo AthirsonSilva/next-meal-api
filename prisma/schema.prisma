@@ -14,8 +14,8 @@ model ratings {
   comment    String    @db.VarChar(255)
   restaurant Int
   client     Int
-  created_at DateTime? @db.Timestamp(0)
-  updated_at DateTime? @db.Timestamp(0)
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  updated_at DateTime? @default(now()) @db.Timestamp(0)
 }
 
 model clients {
@@ -37,8 +37,8 @@ model desks {
   occupation_status Int
   number            Int
   restaurant        Int         @map("restaurant") @db.UnsignedInt
-  created_at        DateTime?   @db.Timestamp(0)
-  updated_at        DateTime?   @db.Timestamp(0)
+  created_at        DateTime?   @default(now()) @db.Timestamp(0)
+  updated_at        DateTime?   @default(now()) @db.Timestamp(0)
   restaurants       restaurants @relation(fields: [restaurant], references: [id], onUpdate: Restrict, map: "desks_restaurant_foreign")
 
   @@index([restaurant], map: "desks_restaurant_foreign")
@@ -51,8 +51,8 @@ model meals {
   ingredients String      @db.VarChar(100)
   culinary    Int         @db.UnsignedInt
   restaurant  Int         @db.UnsignedInt
-  created_at  DateTime?   @db.Timestamp(0)
-  updated_at  DateTime?   @db.Timestamp(0)
+  created_at  DateTime?   @default(now()) @db.Timestamp(0)
+  updated_at  DateTime?   @default(now()) @db.Timestamp(0)
   photo       String      @db.VarChar(255)
   restaurants restaurants @relation(fields: [restaurant], references: [id], onUpdate: Restrict, map: "meals_restaurant_foreign")
   cullinaries culinary    @relation(fields: [culinary], references: [id], onUpdate: Restrict, map: "meals_culinary_foreign")
@@ -69,8 +69,8 @@ model reservations {
   client          Int         @db.UnsignedInt
   restaurant      Int         @db.UnsignedInt
   status          Int         @db.UnsignedInt
-  created_at      DateTime?   @db.Timestamp(0)
-  updated_at      DateTime?   @db.Timestamp(0)
+  created_at      DateTime?   @default(now()) @db.Timestamp(0)
+  updated_at      DateTime?   @default(now()) @db.Timestamp(0)
   clients         clients     @relation(fields: [client], references: [id], onUpdate: Restrict, map: "reservations_client_foreign")
   restaurants     restaurants @relation(fields: [restaurant], references: [id], onUpdate: Restrict, map: "reservations_restaurant_foreign")
   statuses        statuses    @relation(fields: [status], references: [id], onUpdate: Restrict, map: "reservations_status_foreign")
@@ -88,14 +88,14 @@ model restaurants {
   password     String         @db.VarChar(255)
   photo        String         @db.VarChar(255)
   email        String         @unique @db.VarChar(100)
-  opening_time DateTime       @db.Time(0)
-  closing_time DateTime       @db.Time(0)
+  opening_time DateTime       @db.Time()
+  closing_time DateTime       @db.Time()
   capacity     Int
   is_full      Boolean
   description  String         @db.VarChar(1000)
   kitchen      Int            @db.UnsignedInt
-  created_at   DateTime?      @db.Timestamp(0)
-  updated_at   DateTime?      @db.Timestamp(0)
+  created_at   DateTime?      @default(now()) @db.DateTime()
+  updated_at   DateTime?      @default(now()) @db.DateTime()
   addresses    addresses[]
   desks        desks[]
   meals        meals[]
@@ -113,8 +113,8 @@ model addresses {
   restaurant   Int         @db.UnsignedInt
   city         String      @db.VarChar(100)
   state        String      @db.VarChar(40)
-  created_at   DateTime?   @db.Timestamp(0)
-  updated_at   DateTime?   @db.Timestamp(0)
+  created_at   DateTime?   @default(now()) @db.Timestamp(0)
+  updated_at   DateTime?   @default(now()) @db.Timestamp(0)
   restaurants  restaurants @relation(fields: [restaurant], references: [id], onUpdate: Restrict, map: "addresses_restaurant_foreign")
 
   @@index([restaurant], map: "addresses_restaurant_foreign")
@@ -123,8 +123,8 @@ model addresses {
 model statuses {
   id           Int            @id @default(autoincrement()) @db.UnsignedInt
   status       String         @unique @db.VarChar(255)
-  created_at   DateTime?      @db.Timestamp(0)
-  updated_at   DateTime?      @db.Timestamp(0)
+  created_at   DateTime?      @default(now()) @db.Timestamp(0)
+  updated_at   DateTime?      @default(now()) @db.Timestamp(0)
   reservations reservations[]
 }
 
@@ -132,16 +132,16 @@ model culinary {
   id         Int       @id @default(autoincrement()) @db.UnsignedInt
   culinary   String    @unique @db.VarChar(20)
   photo      String    @db.VarChar(255)
-  created_at DateTime? @db.Timestamp(0)
-  updated_at DateTime? @db.Timestamp(0)
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  updated_at DateTime? @default(now()) @db.Timestamp(0)
   meals      meals[]
 }
 
 model kitchens {
   id          Int           @id @default(autoincrement()) @db.UnsignedInt
   kitchen     String        @unique @db.VarChar(40)
-  created_at  DateTime?     @db.Timestamp(0)
   photo       String        @db.VarChar(255)
-  updated_at  DateTime?     @db.Timestamp(0)
+  created_at  DateTime?     @default(now()) @db.Timestamp(0)
+  updated_at  DateTime?     @default(now()) @db.Timestamp(0)
   restaurants restaurants[]
 }

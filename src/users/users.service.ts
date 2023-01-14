@@ -1,5 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common'
 import { clients as Client, Prisma } from '@prisma/client'
+import { scrypt as _scrypt, randomBytes } from 'crypto'
+import { promisify } from 'util'
 import { CpfParser } from '../../helpers/cpf-parser'
 import { PhoneParser } from '../../helpers/phone-parser'
 import { UserAlreadyExists } from '../../helpers/user-already-exists'
@@ -39,9 +41,20 @@ export class UsersService {
 
 	async createUser(data: Prisma.clientsCreateInput): Promise<Client> {
 		try {
-			let { cpf, phone } = data
+			let { cpf, phone, password } = data
+
 			cpf = new CpfParser(cpf).parse()
 			phone = new PhoneParser(phone).parse()
+
+			const scrypt = promisify(_scrypt) as (
+				password: string,
+				salt: string,
+				length: number,
+			) => Promise<string | Buffer>
+			const salt = randomBytes(8).toString('hex')
+			const hash = (await scrypt(password, salt, 16)) as Buffer
+			password = `${salt}.${hash.toString('hex')}`
+
 			const userExists = await new UserAlreadyExists(this.prisma).check(
 				data.email,
 				cpf,
@@ -58,13 +71,16 @@ export class UsersService {
 				)
 			}
 
-			Object.assign(data, { cpf, phone })
+			Object.assign(data, { cpf, phone, password })
 
 			return this.prisma.clients.create({
 				data,
 			})
 		} catch (error) {
-			throw new BadRequestException(error.message)
+			throw new HttpException(
+				error.message || 'Something went wrong',
+				error.status || 500,
+			)
 		}
 	}
 
