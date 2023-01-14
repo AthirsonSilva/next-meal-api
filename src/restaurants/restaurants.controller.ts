@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker'
 import {
 	Body,
 	Controller,
@@ -16,8 +17,16 @@ export class RestaurantsController {
 	constructor(private readonly restaurantsService: RestaurantsService) {}
 
 	@Post()
-	create(@Body() createRestaurantDto: CreateRestaurantDto) {
-		return this.restaurantsService.create(createRestaurantDto)
+	async create(@Body() createRestaurantDto: CreateRestaurantDto) {
+		const restaurant = await this.restaurantsService.create({
+			...createRestaurantDto,
+			photo: createRestaurantDto.photo || faker.image.avatar(),
+		})
+
+		return {
+			message: 'Restaurant created successfully',
+			user: restaurant,
+		}
 	}
 
 	@Get()
