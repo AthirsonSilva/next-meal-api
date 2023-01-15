@@ -3,6 +3,7 @@ import {
 	Injectable,
 	NotFoundException,
 } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
 import { Prisma } from '@prisma/client'
 import { PrismaService } from '@src/prisma.service'
 import { cpf as cpfValidator } from 'cpf-cnpj-validator'
@@ -11,11 +12,15 @@ import { cnpjParser } from 'helpers/cnpj-parser'
 import { phoneParser } from 'helpers/phone-parser'
 import { restaurantAlreadyExists } from 'helpers/restaurant-already-exists'
 import { promisify } from 'util'
+import { RestaurantLoginDto } from './auth/dtos/restaurant-login.dto'
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto'
 
 @Injectable()
 export class RestaurantsService {
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly jwtService: JwtService,
+	) {}
 
 	async create(data: Prisma.restaurantsCreateInput) {
 		try {
@@ -134,10 +139,18 @@ export class RestaurantsService {
 	}
 
 	remove(where: Prisma.restaurantsWhereUniqueInput) {
-		if (where.id) where.id = parseInt(String(where.id))
+		console.log('id', [typeof where, where])
 
 		return this.prisma.restaurants.delete({
-			where,
+			where: where.id ? { id: parseInt(String(where.id)) } : where,
 		})
+	}
+
+	async loginWithCredentials(restaurant: RestaurantLoginDto) {
+		const payload = { email: restaurant.email, sub: restaurant.id }
+
+		return {
+			access_token: this.jwtService.sign(payload),
+		}
 	}
 }

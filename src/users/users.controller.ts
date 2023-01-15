@@ -15,13 +15,13 @@ import {
 	forwardRef,
 } from '@nestjs/common'
 import { clients as ClientModel, Prisma } from '@prisma/client'
-import { LocalStrategy } from '@src/auth/local.strategy'
-import { AuthService } from './../auth/auth.service'
-import { ValidateUserDto } from './../auth/dtos/validate-user.dto'
-import { JwtAuthGuard } from './../auth/jwt-auth.guard'
+import { LocalStrategy } from '@src/users/auth/local.strategy'
+import { AuthService } from './auth/auth.service'
+import { UserLoginDto } from './auth/dtos/user-login.dto'
+import { ValidateUserDto } from './auth/dtos/validate-user.dto'
+import { JwtAuthGuard } from './auth/jwt-auth.guard'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { UserLoginDto } from './dto/user-login.dto'
 import { User } from './entities/user.entity'
 import { UsersService } from './users.service'
 
@@ -65,12 +65,12 @@ export class UsersController {
 	@UseGuards(LocalStrategy)
 	async login(
 		@Body() request: UserLoginDto,
-	): Promise<{ user: string; message: string }> {
+	): Promise<{ token: string; message: string }> {
 		const user = await this.authService.loginWithCredentials(request)
 
 		return {
 			message: 'User logged in successfully',
-			user: user.access_token,
+			token: user.access_token,
 		}
 	}
 

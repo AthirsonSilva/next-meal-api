@@ -6,8 +6,8 @@ export class Restaurant {
 	photo: string
 	password: string
 	email: string
-	opening_time: string
-	closing_time: string
+	opening_time: Date
+	closing_time: Date
 	capacity: number
 	is_full: boolean
 	description: string

@@ -3,7 +3,7 @@ import { IsEmail, IsNumber, IsOptional, IsString } from 'class-validator'
 export class UserLoginDto {
 	@IsOptional()
 	@IsNumber()
-	id: string
+	id: number
 
 	@IsEmail()
 	email: string

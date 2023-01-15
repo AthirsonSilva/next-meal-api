@@ -3,8 +3,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import * as session from 'express-session'
 import * as passport from 'passport'
 import { AppModule } from './app.module'
-import { jwtConstants } from './auth/constants/constants'
 import { PrismaService } from './prisma.service'
+import { jwtConstants } from './users/auth/constants/constants'
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule)

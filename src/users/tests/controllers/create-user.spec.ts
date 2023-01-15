@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker'
 import { forwardRef } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import { AuthModule } from '../../../auth/auth.module'
 import { PrismaService } from '../../../prisma.service'
+import { AuthModule } from '../../auth/auth.module'
 import { UsersController } from '../../users.controller'
 import { UsersService } from '../../users.service'
 

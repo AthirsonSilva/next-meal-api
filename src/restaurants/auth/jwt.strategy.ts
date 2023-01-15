@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
-import { UsersService } from '@src/users/users.service'
 import { ExtractJwt, Strategy } from 'passport-jwt'
-import { User } from './../users/entities/user.entity'
+import { Restaurant } from '../entities/restaurant.entity'
+import { RestaurantsService } from './../restaurants.service'
 import { jwtConstants } from './constants/constants'
 
 export interface JwtPayload {
@@ -12,7 +12,7 @@ export interface JwtPayload {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-	constructor(private readonly usersService: UsersService) {
+	constructor(private readonly restaurantsService: RestaurantsService) {
 		super({
 			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 			ignoreExpiration: false,
@@ -22,17 +22,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
 	async validate(payload: JwtPayload) {
 		const { email, sub } = payload
-		const user: User = await this.usersService.findUser({ email })
+		const restaurant: Restaurant = await this.restaurantsService.findOne({
+			email,
+		})
 
-		if (!user)
+		if (!restaurant)
 			throw new UnauthorizedException({
 				message: 'Invalid credentials',
 				status: 401,
 				payload: { email, sub },
 			})
 
-		console.log(user)
-
-		return user
+		return restaurant
 	}
 }
