@@ -14,7 +14,7 @@ describe('Find all users service', () => {
 	})
 
 	it('should be able to find all registered users', async () => {
-		await service.findUsers({}).then((users) => {
+		await service.findAll({}).then((users) => {
 			expect(users).toBeDefined()
 		})
 	})

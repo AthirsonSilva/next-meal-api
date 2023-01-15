@@ -17,7 +17,7 @@ describe('Update user service', () => {
 	it('should update a user', async () => {
 		await new CreateDummyClient(service).execute().then(async (user) => {
 			await service
-				.updateUser(
+				.update(
 					{ id: user.id },
 					{
 						name: 'New name',
@@ -31,7 +31,7 @@ describe('Update user service', () => {
 
 	it('should not update a user without providing an unique value', async () => {
 		await service
-			.updateUser(
+			.update(
 				{
 					id: 1210231231,
 				},

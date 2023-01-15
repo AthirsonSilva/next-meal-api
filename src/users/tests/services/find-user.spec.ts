@@ -17,13 +17,13 @@ describe('Find user service', () => {
 	it('it should find a user by id', async () => {
 		await new CreateDummyClient(service).execute().then(async (user) => {
 			await service
-				.findUser({ id: user.id })
+				.findOne({ id: user.id })
 				.then((userFound) => expect(userFound).toBeDefined())
 		})
 	})
 
 	it('it should not find a user without providing an id', async () => {
-		await service.findUser({}).catch((error) => {
+		await service.findOne({}).catch((error) => {
 			expect(error).toBeDefined()
 		})
 	})

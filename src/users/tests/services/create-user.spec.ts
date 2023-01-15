@@ -25,7 +25,7 @@ describe('Create user service', () => {
 		const user = await new CreateDummyClient(service).execute()
 
 		await service
-			.createUser({
+			.create({
 				email: user.email,
 				name: faker.name.firstName(),
 				password: faker.internet.password(),

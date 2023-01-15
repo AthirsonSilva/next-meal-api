@@ -12,7 +12,7 @@ export class AuthService {
 	) {}
 
 	async validateCredentials(body: ValidateUserDto) {
-		const user = await this.usersService.findUser({ email: body.email })
+		const user = await this.usersService.findOne({ email: body.email })
 
 		if (user && user.password === body.password) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars

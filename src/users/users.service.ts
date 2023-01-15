@@ -13,9 +13,7 @@ import { UpdateUserDto } from './dto/update-user.dto'
 export class UsersService {
 	constructor(private prisma: PrismaService) {}
 
-	async findUser(
-		where: Prisma.clientsWhereUniqueInput,
-	): Promise<Client | null> {
+	async findOne(where: Prisma.clientsWhereUniqueInput): Promise<Client | null> {
 		if (where.id) where.id = parseInt(String(where.id))
 
 		return this.prisma.clients.findUnique({
@@ -23,7 +21,7 @@ export class UsersService {
 		})
 	}
 
-	async findUsers(params: {
+	async findAll(params: {
 		skip?: number
 		take?: number
 		cursor?: Prisma.clientsWhereUniqueInput
@@ -40,7 +38,7 @@ export class UsersService {
 		})
 	}
 
-	async createUser(data: Prisma.clientsCreateInput): Promise<Client> {
+	async create(data: Prisma.clientsCreateInput): Promise<Client> {
 		try {
 			let { cpf, phone, password } = data
 
@@ -87,7 +85,7 @@ export class UsersService {
 		}
 	}
 
-	async updateUser(
+	async update(
 		where: Prisma.clientsWhereUniqueInput,
 		data: UpdateUserDto,
 	): Promise<Client> {
@@ -116,7 +114,7 @@ export class UsersService {
 		})
 	}
 
-	async deleteUser(where: Prisma.clientsWhereUniqueInput): Promise<Client> {
+	async remove(where: Prisma.clientsWhereUniqueInput): Promise<Client> {
 		if (where.id) where.id = Number(where.id)
 
 		return this.prisma.clients.delete({

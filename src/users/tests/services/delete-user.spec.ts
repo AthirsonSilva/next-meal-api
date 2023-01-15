@@ -16,14 +16,14 @@ describe('Delete user service', () => {
 
 	it('should delete a user', async () => {
 		await new CreateDummyClient(service).execute().then(async (user) => {
-			await service.deleteUser({ id: user.id }).then((userDeleted) => {
+			await service.remove({ id: user.id }).then((userDeleted) => {
 				expect(userDeleted).toBeDefined()
 			})
 		})
 	})
 
 	it('should not delete a user without providing an unique value', async () => {
-		await service.deleteUser({}).catch((error) => {
+		await service.remove({}).catch((error) => {
 			expect(error).toBeDefined()
 		})
 	})

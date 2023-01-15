@@ -7,8 +7,8 @@ import {
 	Param,
 	Patch,
 	Post,
-	Query,
 	Request,
+	UnauthorizedException,
 	UseGuards,
 } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
@@ -19,6 +19,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard'
 import { LocalStrategy } from './auth/local.strategy'
 import { CreateRestaurantDto } from './dto/create-restaurant.dto'
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto'
+import { Restaurant } from './entities/restaurant.entity'
 import { RestaurantsService } from './restaurants.service'
 
 @Controller('restaurants')
@@ -75,20 +76,36 @@ export class RestaurantsController {
 		return this.restaurantsService.findOne(id)
 	}
 
-	@Patch(':id')
+	@Patch()
+	@UseGuards(JwtAuthGuard)
 	update(
-		@Param() where: Prisma.restaurantsWhereUniqueInput,
+		@Request() request: { restaurant: Restaurant },
 		@Body() updateRestaurantDto: UpdateRestaurantDto,
 	) {
-		if (where.id) where.id = parseInt(String(where.id))
+		console.log(request.restaurant)
+
+		if (!request.restaurant.id)
+			throw new UnauthorizedException('You are not authenticated')
+
+		const where = {
+			id: request.restaurant.id,
+		}
 
 		return this.restaurantsService.update(where, updateRestaurantDto)
 	}
 
 	@Delete()
-	remove(@Query('id') where: Prisma.restaurantsWhereUniqueInput) {
-		return this.restaurantsService.remove({
-			id: parseInt(String(where)),
-		})
+	@UseGuards(JwtAuthGuard)
+	remove(@Request() request: { restaurant: Restaurant }) {
+		console.log(request.restaurant)
+
+		if (!request.restaurant.id)
+			throw new UnauthorizedException('You are not authenticated')
+
+		const where = {
+			id: request.restaurant.id,
+		}
+
+		return this.restaurantsService.remove(where)
 	}
 }

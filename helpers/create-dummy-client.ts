@@ -6,7 +6,7 @@ export class CreateDummyClient {
 	constructor(private readonly usersRepository: UsersService) {}
 
 	async execute(): Promise<Client> {
-		return await this.usersRepository.createUser({
+		return await this.usersRepository.create({
 			email: faker.internet.email(),
 			name: faker.name.fullName(),
 			cpf: faker.random.numeric(11),
@@ -18,7 +18,7 @@ export class CreateDummyClient {
 }
 
 export const createDummyClient = async (usersRepository: UsersService) => {
-	return await usersRepository.createUser({
+	return await usersRepository.create({
 		email: faker.internet.email(),
 		name: faker.name.fullName(),
 		cpf: faker.random.numeric(11),

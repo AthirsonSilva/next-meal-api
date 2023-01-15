@@ -24,7 +24,7 @@ describe('Find user controller', () => {
 	it('should find a user by id', async () => {
 		await new CreateDummyClient(service).execute().then(async (user) => {
 			await controller
-				.findUser({ id: parseFloat(String(user.id)) })
+				.findOne({ id: parseFloat(String(user.id)) })
 				.then((response) => {
 					expect(response.user).toBeDefined()
 					expect(response.message).toEqual('User found successfully')

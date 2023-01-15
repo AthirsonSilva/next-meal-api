@@ -11,6 +11,7 @@ import {
 	Patch,
 	Post,
 	Request,
+	UnauthorizedException,
 	UseGuards,
 	forwardRef,
 } from '@nestjs/common'
@@ -37,7 +38,7 @@ export class UsersController {
 	async create(
 		@Body() createUserDto: CreateUserDto,
 	): Promise<{ user: ClientModel; message: string }> {
-		const user = await this.usersService.createUser({
+		const user = await this.usersService.create({
 			...createUserDto,
 			photo: createUserDto.photo || faker.image.avatar(),
 		})
@@ -76,7 +77,7 @@ export class UsersController {
 
 	@Get()
 	async findAll(): Promise<{ users: ClientModel[]; message: string }> {
-		const users = await this.usersService.findUsers({})
+		const users = await this.usersService.findAll({})
 
 		if (!users) throw new NotFoundException('Users not found')
 
@@ -87,14 +88,14 @@ export class UsersController {
 	}
 
 	@Get(':id')
-	async findUser(
+	async findOne(
 		@Param('id') id: Prisma.clientsWhereUniqueInput,
 	): Promise<{ user: ClientModel; message: string }> {
 		if (!id) throw new BadRequestException('You must provide an id')
 
 		id = { id: Number(id) }
 
-		const user = await this.usersService.findUser(id)
+		const user = await this.usersService.findOne(id)
 
 		if (!user) throw new NotFoundException('User not found')
 
@@ -112,11 +113,11 @@ export class UsersController {
 	): Promise<{ user: ClientModel; message: string }> {
 		let { id } = request.user
 
-		if (!id) throw new BadRequestException('You must provide an id')
+		if (!id) throw new UnauthorizedException('You are not authenticated')
 
 		id = Number(id)
 
-		const update = await this.usersService.updateUser({ id }, data)
+		const update = await this.usersService.update({ id }, data)
 
 		if (!update) throw new NotFoundException('User not found')
 
@@ -137,7 +138,7 @@ export class UsersController {
 
 		id = parseInt(String(id))
 
-		const user = await this.usersService.deleteUser({ id })
+		const user = await this.usersService.remove({ id })
 
 		return {
 			message: 'User deleted successfully',
