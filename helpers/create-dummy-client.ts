@@ -16,3 +16,14 @@ export class CreateDummyClient {
 		})
 	}
 }
+
+export const createDummyClient = async (usersRepository: UsersService) => {
+	return await usersRepository.createUser({
+		email: faker.internet.email(),
+		name: faker.name.fullName(),
+		cpf: faker.random.numeric(11),
+		phone: faker.phone.number('+55 (##) #####-####'),
+		password: faker.internet.password(),
+		photo: faker.image.imageUrl(),
+	})
+}

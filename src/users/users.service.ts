@@ -1,10 +1,11 @@
 import { BadRequestException, HttpException, Injectable } from '@nestjs/common'
 import { clients as Client, Prisma } from '@prisma/client'
+import { cpf as cpfValidator } from 'cpf-cnpj-validator'
 import { scrypt as _scrypt, randomBytes } from 'crypto'
+import { phoneParser } from 'helpers/phone-parser'
+import { userAlreadyExists } from 'helpers/user-already-exists'
 import { promisify } from 'util'
-import { CpfParser } from '../../helpers/cpf-parser'
-import { PhoneParser } from '../../helpers/phone-parser'
-import { UserAlreadyExists } from '../../helpers/user-already-exists'
+import { cpfParser } from '../../helpers/cpf-parser'
 import { PrismaService } from '../prisma.service'
 import { UpdateUserDto } from './dto/update-user.dto'
 
@@ -43,8 +44,8 @@ export class UsersService {
 		try {
 			let { cpf, phone, password } = data
 
-			cpf = new CpfParser(cpf).parse()
-			phone = new PhoneParser(phone).parse()
+			cpf = cpfParser(cpf)
+			phone = phoneParser(phone)
 
 			const scrypt = promisify(_scrypt) as (
 				password: string,
@@ -55,13 +56,15 @@ export class UsersService {
 			const hash = (await scrypt(password, salt, 16)) as Buffer
 			password = `${salt}.${hash.toString('hex')}`
 
-			const userExists = await new UserAlreadyExists(this.prisma).check(
-				data.email,
+			const userExists = await userAlreadyExists(this.prisma, {
+				email: data.email,
 				cpf,
 				phone,
-			)
+			})
 
-			if (cpf.length !== 11) throw new BadRequestException('Invalid CPF')
+			if (cpf.length !== 11 || cpfValidator.isValid(cpf))
+				throw new BadRequestException('Invalid CPF')
+
 			if (phone.length > 20 || phone.length < 8)
 				throw new BadRequestException('Invalid Phone number')
 
@@ -99,8 +102,9 @@ export class UsersService {
 
 				Object.assign(user, {
 					...data,
-					cpf: new CpfParser(data.cpf ?? user.cpf).parse(),
-					phone: new PhoneParser(data.phone ?? user.phone).parse(),
+					cpf: cpfParser(data.cpf ?? user.cpf),
+					phone: phoneParser(data.phone ?? user.phone),
+					updated_at: new Date(),
 				})
 
 				return user

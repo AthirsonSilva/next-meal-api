@@ -8,6 +8,7 @@ import {
 	Patch,
 	Post,
 } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
 import { CreateRestaurantDto } from './dto/create-restaurant.dto'
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto'
 import { RestaurantsService } from './restaurants.service'
@@ -31,24 +32,24 @@ export class RestaurantsController {
 
 	@Get()
 	findAll() {
-		return this.restaurantsService.findAll()
+		return this.restaurantsService.findAll({})
 	}
 
 	@Get(':id')
-	findOne(@Param('id') id: string) {
-		return this.restaurantsService.findOne(+id)
+	findOne(@Param('id') id: Prisma.restaurantsWhereUniqueInput) {
+		return this.restaurantsService.findOne(id)
 	}
 
 	@Patch(':id')
 	update(
-		@Param('id') id: string,
+		@Param('id') id: Prisma.restaurantsWhereUniqueInput,
 		@Body() updateRestaurantDto: UpdateRestaurantDto,
 	) {
-		return this.restaurantsService.update(+id, updateRestaurantDto)
+		return this.restaurantsService.update(id, updateRestaurantDto)
 	}
 
 	@Delete(':id')
-	remove(@Param('id') id: string) {
-		return this.restaurantsService.remove(+id)
+	remove(@Param('id') where: Prisma.restaurantsWhereUniqueInput) {
+		return this.restaurantsService.remove(where)
 	}
 }

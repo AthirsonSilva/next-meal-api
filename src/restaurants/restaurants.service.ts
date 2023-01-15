@@ -1,11 +1,16 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import {
+	BadRequestException,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { PrismaService } from '@src/prisma.service'
+import { cpf as cpfValidator } from 'cpf-cnpj-validator'
 import { scrypt as _scrypt, randomBytes } from 'crypto'
-import { CnpjParser } from 'helpers/cnpj-parser'
-import { RestaurantAlreadyExists } from 'helpers/restaurant-already-exists'
+import { cnpjParser } from 'helpers/cnpj-parser'
+import { phoneParser } from 'helpers/phone-parser'
+import { restaurantAlreadyExists } from 'helpers/restaurant-already-exists'
 import { promisify } from 'util'
-import { PhoneParser } from './../../helpers/phone-parser'
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto'
 
 @Injectable()
@@ -15,8 +20,8 @@ export class RestaurantsService {
 	async create(data: Prisma.restaurantsCreateInput) {
 		try {
 			let { cnpj, phone, password } = data
-			phone = new PhoneParser(phone).parse()
-			cnpj = new CnpjParser(cnpj).parse()
+			phone = phoneParser(phone)
+			cnpj = cnpjParser(cnpj)
 
 			const scrypt = promisify(_scrypt) as (
 				password: string,
@@ -27,11 +32,15 @@ export class RestaurantsService {
 			const hash = (await scrypt(password, salt, 16)) as Buffer
 			password = `${salt}.${hash.toString('hex')}`
 
-			const restaurantExists = await new RestaurantAlreadyExists(
-				this.prisma,
-			).check(data.email, cnpj, phone)
+			const restaurantExists = await restaurantAlreadyExists(this.prisma, {
+				cnpj,
+				phone,
+				email: data.email,
+				name: data.name,
+			})
 
-			if (cnpj.length !== 14) throw new BadRequestException('Invalid CNPJ')
+			if (cnpj.length !== 14 || cpfValidator.isValid(cnpj))
+				throw new BadRequestException('Invalid CNPJ')
 
 			if (phone.length > 20 || phone.length < 8)
 				throw new BadRequestException('Invalid Phone number')
@@ -72,19 +81,63 @@ export class RestaurantsService {
 		}
 	}
 
-	findAll() {
-		return `This action returns all restaurants`
+	async findAll(params: {
+		skip?: number
+		take?: number
+		cursor?: Prisma.restaurantsWhereUniqueInput
+		where?: Prisma.restaurantsWhereInput
+		orderBy?: Prisma.restaurantsOrderByWithRelationInput
+	}) {
+		const restaurants = await this.prisma.restaurants.findMany({
+			include: { kitchens: true, addresses: true },
+			...params,
+		})
+
+		if (restaurants.length === 0)
+			throw new NotFoundException('No restaurants found')
+
+		return restaurants
 	}
 
-	findOne(id: number) {
-		return `This action returns a #${id} restaurant`
+	async findOne(where: Prisma.restaurantsWhereUniqueInput) {
+		if (where.id) where.id = parseInt(String(where.id))
+
+		const restaurant = await this.prisma.restaurants.findUnique({
+			where,
+			include: { kitchens: true, addresses: true },
+		})
+
+		if (!restaurant) throw new NotFoundException('Restaurant not found')
+
+		return restaurant
 	}
 
-	update(id: number, updateRestaurantDto: UpdateRestaurantDto) {
-		return `This action updates a #${id} restaurant`
+	async update(
+		where: Prisma.restaurantsWhereUniqueInput,
+		data: UpdateRestaurantDto,
+	) {
+		if (where.id) where.id = parseInt(String(where.id))
+
+		const restaurant = await this.prisma.restaurants.findUnique({
+			where,
+		})
+
+		Object.assign(restaurant, {
+			...data,
+			updated_at: new Date(),
+		})
+
+		return this.prisma.restaurants.update({
+			where,
+			data: restaurant,
+		})
 	}
 
-	remove(id: number) {
-		return `This action removes a #${id} restaurant`
+	remove(where: Prisma.restaurantsWhereUniqueInput) {
+		if (where.id) where.id = parseInt(String(where.id))
+
+		return this.prisma.restaurants.delete({
+			where,
+		})
 	}
 }

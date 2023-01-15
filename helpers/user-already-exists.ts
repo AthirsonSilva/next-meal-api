@@ -7,7 +7,9 @@ export class UserAlreadyExists {
 		this.prisma = prisma
 	}
 
-	async check(email?: string, cpf?: string, phone?: string) {
+	async check(params: { email?: string; cpf?: string; phone?: string }) {
+		const { email, cpf, phone } = params
+
 		const user = await this.prisma.clients.findFirst({
 			where: {
 				OR: [
@@ -32,4 +34,11 @@ export class UserAlreadyExists {
 
 		return false
 	}
+}
+
+export const userAlreadyExists = async (
+	prisma: PrismaClient,
+	params: { email?: string; cpf?: string; phone?: string },
+) => {
+	return await new UserAlreadyExists(prisma).check(params)
 }

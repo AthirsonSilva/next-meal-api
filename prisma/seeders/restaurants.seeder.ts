@@ -23,10 +23,10 @@ export const restaurantsSeeder = async () => {
 					phone: '25113168',
 					addresses: {
 						create: {
-							cep: '08420-000',
+							cep: '08430-040',
 							city: 'São Paulo',
 							neighborhood: 'Guaianazes',
-							street: 'Estrada Itaquera Guaianazes',
+							street: 'Rua Horácio Quiroga',
 							state: 'SP',
 							created_at: new Date(),
 							updated_at: new Date(),
